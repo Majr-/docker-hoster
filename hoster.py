@@ -126,7 +126,18 @@ def update_hosts_file():
 
     #replace etc/hosts with aux file, making it atomic
     shutil.move(aux_file_path, hosts_path)
+    
+    post_update_exec()
 
+
+def post_update_exec():
+    cont_name = os.environ['POST_UPDATE_CONT']
+    cont_cmd = os.environ['POST_UPDATE_CMD']
+    
+    if len(cont_name)>0 and len(cont_cmd)>0:
+        container = docker.from_env().get(cont_name)
+        container.exec_run(cont_cmd)
+        
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Synchronize running docker container IPs with host /etc/hosts file.')
