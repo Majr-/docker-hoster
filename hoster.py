@@ -136,7 +136,8 @@ def post_update_exec():
     cont_cmd = os.environ['POST_UPDATE_CMD']
     
     if len(cont_name)>0 and len(cont_cmd)>0:
-        container = docker.DockerClient(base_url='unix://%s' % sock).get(cont_name)
+        client = docker.DockerClient(base_url='unix://%s' % sock)
+        container = client.containers.get(cont_name)
         container.exec_run(cont_cmd)
         
 
