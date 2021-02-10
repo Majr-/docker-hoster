@@ -67,19 +67,19 @@ def get_container_data(dockerClient, container_id):
     
     result = []
 
-    for values in info["NetworkSettings"]["Networks"].values():
-        
-        if not values["Aliases"]: 
-            continue
+#    for values in info["NetworkSettings"]["Networks"].values():
+#        
+#        if not values["Aliases"]: 
+#            continue
+#
+#        result.append({
+#                "ip": values["IPAddress"] , 
+#                "name": container_name,
+#                "domains": set(values["Aliases"] + [container_name, container_hostname])
+#            })
 
-        result.append({
-                "ip": values["IPAddress"] , 
-                "name": container_name,
-                "domains": set(values["Aliases"] + [container_name, container_hostname])
-            })
-
-    if container_ip:
-        result.append({"ip": container_ip, "name": container_name, "domains": [container_name, container_hostname ]})
+#    if container_ip:
+    result.append({"ip": container_ip, "name": container_name, "domains": [container_name, container_hostname ]})
 
     return result
 
@@ -136,9 +136,16 @@ def post_update_exec():
     cont_cmd = os.environ['POST_UPDATE_CMD']
     
     if len(cont_name)>0 and len(cont_cmd)>0:
+        print('POST_UPDATE_EXEC: running cmd "%s" in container "%s"' % (cont_cmd, cont_name))
         client = docker.DockerClient(base_url='unix://%s' % sock)
-        container = client.containers.get(cont_name)
-        container.exec_run(cont_cmd)
+        try:
+            container = client.containers.get(cont_name)
+        except docker.errors.NotFound:
+            print('[Error] POST_UPDATE_EXEC: container "%s" not found' % cont_name)
+        else:
+            result = container.exec_run(cont_cmd)
+            if result.exec_code>0:
+                print('[Error] POST_UPDATE_EXEC: command returned error: %s' % result.output)
         
 
 def parse_args():
