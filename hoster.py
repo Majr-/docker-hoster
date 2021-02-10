@@ -67,19 +67,18 @@ def get_container_data(dockerClient, container_id):
     
     result = []
 
-#    for values in info["NetworkSettings"]["Networks"].values():
-#        
-#        if not values["Aliases"]: 
-#            continue
-#
-#        result.append({
-#                "ip": values["IPAddress"] , 
-#                "name": container_name,
-#                "domains": set(values["Aliases"] + [container_name, container_hostname])
-#            })
+    for values in info["NetworkSettings"]["Networks"].values():
+        if not values["Aliases"]: 
+            continue
 
-#    if container_ip:
-    result.append({"ip": container_ip, "name": container_name, "domains": [container_name, container_hostname ]})
+        result.append({
+                "ip": values["IPAddress"] , 
+                "name": container_name,
+                "domains": list(dict.fromkeys(values["Aliases"] + [container_name, container_hostname]))
+            })
+
+    if container_ip:
+        result.append({"ip": container_ip, "name": container_name, "domains": [container_name, container_hostname ]})
 
     return result
 
