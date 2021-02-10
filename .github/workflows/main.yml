@@ -22,8 +22,15 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: actions/checkout@master
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: majr25/docker-hoster
+      - uses: actions/checkout@v2
+        name: Checkout repository
+
+      - uses: pmorelli92/github-container-registry-build-push@1.0.1
+        name: Build and Publish latest service image
+        with:
+          # Read note below to see how to generate the PAT
+          personal-access-token: ${{secrets.GHCR_PAT}}
+          docker-image-name: docker-hosts
+          docker-image-tag: develop
+          dockerfile-path: ./Dockerfile
+          build-context: .
