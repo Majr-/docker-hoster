@@ -33,4 +33,4 @@ jobs:
           docker-image-name: docker-hosts
           docker-image-tag: develop
           dockerfile-path: ./Dockerfile
-          build-context: .
+          build-context: ./
