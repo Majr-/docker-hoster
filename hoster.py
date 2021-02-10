@@ -74,11 +74,11 @@ def get_container_data(dockerClient, container_id):
         result.append({
                 "ip": values["IPAddress"] , 
                 "name": container_name,
-                "domains": list(dict.fromkeys(values["Aliases"] + [container_name, container_hostname]))
+                "domains": [container_name, container_hostname]
             })
 
     if container_ip:
-        result.append({"ip": container_ip, "name": container_name, "domains": [container_name, container_hostname ]})
+        result.append({"ip": container_ip, "name": container_name, "domains": [container_name, container_hostname]})
 
     return result
 
