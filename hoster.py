@@ -144,8 +144,8 @@ def post_update_exec():
             print('[Error] POST_UPDATE_EXEC: container "%s" not found' % cont_name)
         else:
             result = container.exec_run(cont_cmd)
-            if result.exec_code>0:
-                print('[Error] POST_UPDATE_EXEC: command returned error: %s' % result.output)
+            if result.exit_code>0:
+                print('[Error] POST_UPDATE_EXEC: command returned error %s: %s' % (result.exit_code, result.output))
         
 
 def parse_args():
